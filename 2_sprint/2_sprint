@@ -1,0 +1,109 @@
+"""
+As input data, you have a list of strings.
+
+Write a method double_string() for counting the number of strings from the list, represented in the form of the concatenation of two strings from this list
+
+For example:
+Test
+1. data = ['aa', 'aaaa', 'abc', 'abcabc', 'qwer', 'qwerqwer']
+print(double_string(data))
+"""
+data = ['aa', 'aaaa', 'abc', 'abcabc', 'qwer', 'qwerqwer', 'aa']
+
+
+def double_string(data):
+    count = 0
+    for item in data:
+        for other_item in data:
+            if item * 2 in other_item:
+                count += 1
+    return count
+
+
+print(double_string(data))
+
+"""
+Numbers in the Morse code have the following pattern:
+
+    all digits consist of 5 characters;
+    the number of dots at the beginning indicates the numbers from 1 to 5, the remaining characters are dashes;
+    starting with the number 6, each dot is replaced by a dash and vise versa.
+
+Write the function morse_number() for encryption of a number in a three-digit format in Morse code.
+
+
+Attention!
+Do not use any collection data like lists, tuples, dictionaries for holding Morse codes
+
+For example:
+Test 	Result
+
+print(morse_number("295"))
+
+	
+
+..--- ----. .....
+
+print(morse_number("005"))
+
+	
+
+----- ----- .....
+
+print(morse_number("513"))
+
+	
+
+..... .---- ...--
+
+print(morse_number("784"))
+
+	
+
+--... ---.. ....-
+
+full_name = lambda first, last: f'Full name: {first.title()} {last.title()}'
+
+"""
+
+
+def morse_number(var):
+    str = '.-'
+    one = '.----'
+    two = '..---'
+    three = '...--'
+    four = '....-'
+    five = '.....'
+    zero = '-----'
+    value = ''
+    for item in var:
+        for i in range(0, 10):
+            if int(item) == i:
+                if i == 0:
+                    value += str[1]*5 + ' '
+                elif i == 1:
+                    value += str[0] + str[1]*4 + ' '
+                elif i == 2:
+                    value += str[0]*2 + str[1]*3 + ' '
+                elif i == 3:
+                    value += str[0]*2 + str[1]*2 + ' '
+                elif i == 4:
+                    value += str[0]*4 + str[1] + ' '
+                elif i == 5:
+                    value += str[0]*5 + ' '
+                elif i == 6:
+                    value += four[::-1] + ' '
+                elif i == 7:
+                    value += three[::-1] + ' '
+                elif i == 8:
+                    value += two[::-1] + ' '
+                elif i == 9:
+                    value += one[::-1] + ' '
+
+    return value
+
+
+print(morse_number("295"))
+
+#full_name = lambda first, last: f'Full name: {first.title()} {last.title()}'
+
