@@ -1,0 +1,10 @@
+Example
+
+Open the file "demofile2.open" and append content to the file:
+f = open("demofile2.open", "a")
+f.write("Now the file has more content!")
+f.close()
+
+#open and read the file after the appending:
+f = open("demofile2.open", "r")
+print(f.read()) 
