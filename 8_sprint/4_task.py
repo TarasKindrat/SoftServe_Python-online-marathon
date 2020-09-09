@@ -94,7 +94,7 @@ class Triangle:
     def get_area(self):
         p = (self.sides_list[0] + self.sides_list[1] + self.sides_list[2]) / 2
         s = math.sqrt(p * (p - self.sides_list[0]) * (p - self.sides_list[1]) * (p - self.sides_list[2]))
-        return s
+        return float(("%0.3f"%s)[0:-1])
 
 
 
@@ -174,47 +174,47 @@ class TriangleTest(unittest.TestCase):
 # print(triang3.get_area())
 
 # print(type(((3, 4, 5), 6.0)))
-valid_test_data = [
-    (3, 4, 5),
-    (26, 25, 3),
-    (30, 29, 5),
-    (87, 55, 34),
-    (120, 109, 13),
-    (123, 122, 5)]
-for data in valid_test_data:
-    print(Triangle(data).get_area())
-
-not_valid_triangle = [
-    (1, 2, 3),
-    (1, 1, 2),
-    (7, 7, 15),
-    (100, 7, 90),
-    (17, 18, 35),
-    (127, 17, 33),
-    (145, 166, 700),
-    (1000, 2000, 1),
-    (717, 17, 7),
-    (0, 7, 7),
-    (-7, 7, 7)
-]
-for data in not_valid_triangle:
-    try:
-        Triangle(data)
-    except TriangleNotExistException as e:
-        print(e)
-
+# valid_test_data = [
+#     (3, 4, 5),
+#     (26, 25, 3),
+#     (30, 29, 5),
+#     (87, 55, 34),
+#     (120, 109, 13),
+#     (123, 122, 5)]
+# for data in valid_test_data:
+#     print(Triangle(data).get_area())
 #
-not_valid_arguments = [
-    ('3', 4, 5),
-    ('a', 2, 3),
-    'string',
-    (7, 2),
-    (7, 7, 7, 7),
-    10
-]
-for data in not_valid_arguments:
-    try:
-        Triangle(data)
-    except TriangleNotValidArgumentException as e:
-        print(e)
+# not_valid_triangle = [
+#     (1, 2, 3),
+#     (1, 1, 2),
+#     (7, 7, 15),
+#     (100, 7, 90),
+#     (17, 18, 35),
+#     (127, 17, 33),
+#     (145, 166, 700),
+#     (1000, 2000, 1),
+#     (717, 17, 7),
+#     (0, 7, 7),
+#     (-7, 7, 7)
+# ]
+# for data in not_valid_triangle:
+#     try:
+#         Triangle(data)
+#     except TriangleNotExistException as e:
+#         print(e)
+#
+# #
+# not_valid_arguments = [
+#     ('3', 4, 5),
+#     ('a', 2, 3),
+#     'string',
+#     (7, 2),
+#     (7, 7, 7, 7),
+#     10
+# ]
+# for data in not_valid_arguments:
+#     try:
+#         Triangle(data)
+#     except TriangleNotValidArgumentException as e:
+#         print(e)
 
