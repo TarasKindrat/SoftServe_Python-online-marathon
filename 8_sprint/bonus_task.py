@@ -48,3 +48,46 @@ get_grades_for_user(user, authorized_user, users) #-> return grades for user (if
 
 #end : write all to json-files (users##.json, subjects##.json, grades##.json) with date-based name
 """
+
+import json
+from enum import Enum
+
+
+class FileType(Enum):
+    JSON = "JSON"
+    BYTE = "BYTE"
+
+class Role(Enum):
+    Trainee = "Trainee"
+    Mentor = "Mentor"
+
+class Score(Enum):
+    'mark
+
+
+class User:
+    def __init__(self, username, password, role=Role.Trainee):
+        self.id = 0
+        self.username
+        self.password = password
+        self.role = role
+        self.scores = []
+
+    def __str__(self):
+        return f"{self.id }  {self.username}"
+
+    # @classmethod
+    # def from_json(cls, json_file):
+    #     with open(json_file) as file:
+    #         data = json.load(file)
+    #     return cls(**data)
+
+    @staticmethod
+    def create_user(username, password, role):
+        pass
+
+    def add_score_for_subject(self, subject, score):
+        pass
+
+class Subject:
+    pass
