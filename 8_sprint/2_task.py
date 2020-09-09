@@ -1,3 +1,16 @@
+"""
+You have function divide
+def divide(num_1, num_2):
+    return float(num_1) / num_2
+
+Please, write the code with unit tests for the function "divide":
+
+    minimum 3 tests
+    must chek all flows
+    all test must be pass
+    no failures
+    no skip
+"""
 import unittest
 
 
