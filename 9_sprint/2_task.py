@@ -172,7 +172,19 @@ Response body:
 
 import json
 import logging
-from http.server import HTTPServer, BaseHTTPRequestHandle
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import re
+
+
+class Users:
+    def __init__(self, id: int, username: str, firstName: str, lastName: str, email: str, password: str):
+        self.id = id
+        self.username = username
+        self.firstName = firstName
+        self.lastName = lastName
+        self.email = email
+        self.password = password
+
 
 USERS_LIST = [
     {
@@ -184,6 +196,51 @@ USERS_LIST = [
         "password": "12345",
     }
 ]
+
+error = {"error": "User not found"}
+
+
+def valid_user(data):
+    print(data)
+    if data.get("id") and data.get("username") and data.get("firstName") and data.get("lastName") and data.get("email") \
+            and data.get("password"):
+        return True
+    else:
+        return False
+
+
+def valid_users_list(data):
+    for item in data:
+        if not valid_user(item):
+            return False
+    return True
+
+
+def update_user(data: dict, new_data: dict):
+    for key, value in new_data.items():
+        data[key] = value
+    return data
+
+
+def create_user(data):
+    """
+    {'id': 1, 'username': 'theUser', 'firstName': 'John', 'firstName': 'James', 'email': 'john@email.com',
+    'password': '12345'}
+    :param data:
+    :return:
+    """
+    unique_id = True
+    if valid_user(data):
+        for user in USERS_LIST:
+            if user.get("id") == data.get("id"):
+                unique_id = False
+                break
+        if unique_id:
+            USERS_LIST.append(Users(**data).__dict__)
+            print(USERS_LIST)
+    else:
+        unique_id = False
+    return unique_id
 
 
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -211,27 +268,101 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                 "password": "12345",
             })
             self._set_response(status_code=204)
-        else:
+        if self.path == "/users":
+            self._set_response(status_code=200, body=USERS_LIST)
+        if self.path.startswith("/user/"):
+            print(self.path)
+            username = self.path.lstrip("/user/")
+            print(username)
+            for user in USERS_LIST:
+                if user.get('username') == username:
+                    find_user = user
+                    self._set_response(status_code=200, body=find_user)
 
-            self._set_response()
-            self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
+                else:
+                    self._set_response(status_code=400, body=error)
+        # else:
+        #     self._set_response()
+        #     self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
 
     def do_POST(self):
         logging.info("POST request,\nPath: % s\nHeaders:\n % s\n ", str(self.path), str(self.headers))
         content_length = int(self.headers['Content-Length'])  # <--- Gets the size of data
         post_data = self.rfile.read(content_length)  # <--- Gets the data itself
-
-        self._set_response()
-        self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
+        # print("****************************************\n",post_data)
+        message = json.loads(post_data)
+        # print("message ",message)
+        if self.path == "/user":
+            # print(Users(**message))
+            if create_user(message):
+                # print("!########################################################")
+                self._set_response(status_code=201, body=message)
+                # self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
+            else:
+                self._set_response(status_code=400)
+                # self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
+        if self.path == "/user/createWithList":
+            if valid_users_list(message):
+                for item in message:
+                    create_user(item)
+                self._set_response(status_code=201, body=message)
+            else:
+                self._set_response(status_code=400)
+        # else:
+        #     self._set_response()
+        #     self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
 
     def do_PUT(self):
         logging.info("PUT request,\nPath: % s\nHeaders:\n % s\n ", str(self.path), str(self.headers))
         put_data = self._pars_body()
-        self._set_response()
-        self.wfile.write(json.dumps(put_data).encode('utf-8'))
+        #print(put_data)
+        #print("**************")
+        if self.path.startswith("/user/"):
+            username = self.path.lstrip("/user/")
+            print(username)
+            print("Put data ", put_data.get("username"))
+
+            def find_user_for_update(user_name, user_list):
+                update = False
+                for user in user_list:
+                    if user.get('username') == user_name:
+                        update = True
+                return update
+            result = find_user_for_update(username,USERS_LIST)
+            if not result:
+                self._set_response(status_code=404, body=error)
+                return
+            if not put_data.get("username"):
+                self._set_response(status_code=400, body={"error": "not valid request data"})
+                return
+            if result:
+                for user in USERS_LIST:
+                    if user.get('username') == username:
+                        user2 = update_user(user, put_data)
+                        USERS_LIST.remove(user)
+                        USERS_LIST.append(user2)
+                        self._set_response(status_code=200, body=user2)
+                        return
+
+
+
+        # self._set_response()
+        # self.wfile.write(json.dumps(put_data).encode('utf-8'))
 
     def do_DELETE(self):
         logging.info("DELETE request,\nPath: % s\nHeaders:\n % s\n ", str(self.path), str(self.headers))
+        if self.path.startswith("/user/"):
+            print(self.path)
+            id = int(self.path.lstrip("/user/"))
+            print(id)
+            for user in USERS_LIST:
+                if user.get('id') == id:
+                    print(user)
+                    USERS_LIST.remove(user)
+                    self._set_response(status_code=200)
+
+                else:
+                    self._set_response(status_code=404, body=error)
 
 
 def run(server_class=HTTPServer, handler_class=SimpleHTTPRequestHandler, port=8000):

@@ -72,14 +72,17 @@ def route_summarization_in_ip_networks(data):
         list_network_address = []
         list_bin_ip_1 = []
         list_bin_ip = []
+        list_bin_ip_2 = []
         # Create template for binary format
         binary_template = "{0:08b}{1:08b}{2:08b}{3:08b}"
-
+        # print(bin(int('172')) and bin(172))
+        # print(int(0b10101100))
         # Add lists with IP octets to list like [['10', '1', '57', '0'], ['10', '1', '59', '0'], ['10', '1', '61', '0']]
         for d in data:
             list_bin_ip_1.append([n for n in d.split(".")])
         # Convert to binary format use template
         for item in list_bin_ip_1:
+            list_bin_ip_2.append(bin(int(''.join(item))))
             list_bin_ip.append(binary_template.format(int(item[0]), int(item[1]), int(item[2]), int(item[3])))
 
         for i in range(0, len(list(list_bin_ip[0]))):
@@ -97,6 +100,10 @@ def route_summarization_in_ip_networks(data):
         network_address = f"{int('0b'+network_address_string[0:8],2)}.{int('0b'+network_address_string[8:16],2)}." \
                           f"{int('0b'+network_address_string[16:24],2)}.{int('0b'+network_address_string[24:],2)}" \
                           f"/{network_mask}"
+
+        # for ip_adr in range(1, len(list_bin_ip_2)):
+        #     result = list_bin_ip_2[0] and ip_adr
+        # print(int(result))
 
         return network_address
     else:
